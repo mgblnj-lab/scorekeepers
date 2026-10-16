@@ -1,0 +1,252 @@
+TEST123
+  indented<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MGBL Scorekeeper Sign-up</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --ink:#1b1f2a; --muted:#6b7280; --line:#e3e6ec;
+          --accent:#1f3864; --open:#1a7f37; --full:#9ca3af; --err:#b42318; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+         background:var(--bg); color:var(--ink); }
+  header { background:#fff; color:var(--ink); padding:18px 16px 14px; text-align:center; border-bottom:4px solid #f47b20; }
+  header img { display:block; width:120px; height:auto; margin:0 auto 8px; }
+  header h1 { margin:0; font-size:22px; color:var(--accent); }
+  header p { margin:6px 0 0; color:var(--muted); font-size:14px; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .chip { border:1px solid var(--line); background:#fff; border-radius:999px; padding:6px 12px;
+          font-size:13px; cursor:pointer; }
+  .chip.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  h2 { font-size:15px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:22px 0 8px; }
+  .game { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px;
+          margin-bottom:10px; display:flex; gap:12px; align-items:center; }
+  .game.full { opacity:.6; }
+  .info { flex:1; min-width:0; }
+  .time { font-weight:700; }
+  .match { margin:3px 0; }
+  .meta { font-size:13px; color:var(--muted); }
+  .slots { font-size:13px; margin-top:6px; }
+  .slots .open { color:var(--open); font-weight:600; }
+  .slots .names { color:var(--muted); }
+  button.claim { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:10px 14px;
+                 font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  button.claim:disabled { background:var(--full); cursor:default; }
+  .empty, .loading { text-align:center; color:var(--muted); padding:40px 0; }
+  dialog { border:0; border-radius:12px; padding:0; width:min(420px, calc(100% - 32px)); }
+  dialog::backdrop { background:rgba(0,0,0,.4); }
+  form { padding:20px; }
+  form h3 { margin:0 0 4px; font-size:17px; }
+  form .sub { font-size:13px; color:var(--muted); margin-bottom:14px; }
+  label { display:block; font-size:13px; font-weight:600; margin:10px 0 4px; }
+  input { width:100%; padding:10px; border:1px solid var(--line); border-radius:8px; font-size:15px; }
+  .row { display:flex; gap:8px; justify-content:flex-end; margin-top:16px; }
+  .ghost { background:none; border:1px solid var(--line); border-radius:8px; padding:10px 14px; cursor:pointer; }
+  .msg { font-size:14px; margin-top:10px; }
+  .msg.err { color:var(--err); }
+  .cancel-card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin-top:8px; }
+  .cancel-card h3 { margin:0 0 10px; font-size:18px; }
+  .cancel-card p { margin:6px 0; }
+  .danger { background:var(--err) !important; }
+  a.home { display:inline-block; margin-top:14px; color:var(--accent); font-weight:600; }
+  .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--open); color:#fff;
+           padding:12px 18px; border-radius:8px; font-size:14px; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <img src="data:image/png;base64,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" alt="Mitch Gross Basketball League">
+  <h1>MGBL Scorekeeper Sign-up</h1>
+  <p id="range">Loading this week's games…</p>
+</header>
+<main>
+  <div class="filters" id="filters"></div>
+  <div id="list"><div class="loading">Loading…</div></div>
+</main>
+
+<dialog id="dlg">
+  <form id="form" method="dialog">
+    <h3>Sign up to keep score</h3>
+    <div class="sub" id="dlgGame"></div>
+    <label for="name">Name of child who will be keeping score</label>
+    <input id="name" autocomplete="off" required>
+    <label for="email">Parent's email</label>
+    <input id="email" type="email" autocomplete="email" required>
+    <div class="msg" id="formMsg"></div>
+    <div class="row">
+      <button type="button" class="ghost" id="cancel">Cancel</button>
+      <button type="submit" class="claim" id="submit">Sign up</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = 'https://script.google.com/macros/s/AKfycbxXFAFBUmghuQ0yv1SjnAd23nryhAHQg0y9qi6breQXImxvjMsHL9tJhxx6kpI5BLxdqg/exec';
+  function call(api, params) {
+    const q = new URLSearchParams(Object.assign({ api: api, t: Date.now() }, params || {}));
+    return fetch(API + '?' + q.toString()).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  let data = null, division = 'All', current = null;
+  const $ = id => document.getElementById(id);
+
+  function fmtDate(iso, opts) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', opts);
+  }
+
+  function load() {
+    call('week').then(res => { data = res; render(); })
+      .catch(() => { if (!data) $('list').innerHTML = '<div class="empty">Could not load games. Please refresh.</div>'; });
+  }
+
+  function render() {
+    const w = data.window;
+    $('range').textContent = 'Games ' + fmtDate(w.start, {month:'short', day:'numeric'}) +
+      ' – ' + fmtDate(w.end, {month:'short', day:'numeric'}) + '. Two scorekeepers per game.';
+
+    const divs = ['All'].concat([...new Set(data.games.map(g => g.division))].sort());
+    $('filters').innerHTML = '';
+    if (divs.length > 2) divs.forEach(d => {
+      const b = document.createElement('button');
+      b.className = 'chip' + (d === division ? ' on' : '');
+      b.textContent = d;
+      b.onclick = () => { division = d; render(); };
+      $('filters').appendChild(b);
+    });
+
+    const games = data.games.filter(g => division === 'All' || g.division === division);
+    const list = $('list');
+    list.innerHTML = '';
+    if (!games.length) { list.innerHTML = '<div class="empty">No games scheduled this week.</div>'; return; }
+
+    let lastDate = '';
+    games.forEach(g => {
+      if (g.date !== lastDate) {
+        const h = document.createElement('h2');
+        h.textContent = fmtDate(g.date, {weekday:'long', month:'long', day:'numeric'});
+        list.appendChild(h);
+        lastDate = g.date;
+      }
+      const open = g.slots - g.filled;
+      const card = document.createElement('div');
+      card.className = 'game' + (open <= 0 ? ' full' : '');
+      const info = document.createElement('div');
+      info.className = 'info';
+      info.innerHTML = '<div class="time"></div><div class="match"></div><div class="meta"></div><div class="slots"></div>';
+      info.querySelector('.time').textContent = g.start + ' – ' + g.end;
+      info.querySelector('.match').textContent = g.game;
+      info.querySelector('.meta').textContent = g.division + ' · ' + g.location + ', ' + g.court;
+      const s = info.querySelector('.slots');
+      const o = document.createElement('span');
+      o.className = open > 0 ? 'open' : '';
+      o.textContent = open > 0 ? open + ' of ' + g.slots + ' spots open' : 'Full';
+      s.appendChild(o);
+      const btn = document.createElement('button');
+      btn.className = 'claim';
+      btn.textContent = open > 0 ? 'Sign up' : 'Full';
+      btn.disabled = open <= 0;
+      btn.onclick = () => openForm(g);
+      card.appendChild(info);
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
+  }
+
+  function openForm(g) {
+    current = g;
+    $('dlgGame').textContent = fmtDate(g.date, {weekday:'short', month:'short', day:'numeric'}) +
+      ' · ' + g.start + ' · ' + g.game + ' (' + g.location + ', ' + g.court + ')';
+    $('formMsg').textContent = '';
+    $('formMsg').className = 'msg';
+    $('submit').disabled = false;
+    $('dlg').showModal();
+  }
+
+  $('cancel').onclick = () => $('dlg').close();
+  $('form').onsubmit = e => {
+    e.preventDefault();
+    $('submit').disabled = true;
+    $('formMsg').className = 'msg';
+    $('formMsg').textContent = 'Saving…';
+    call('signup', { game: current.id, name: $('name').value, email: $('email').value }).then(res => {
+      if (res.ok) {
+        $('dlg').close();
+        showToast(res.message + ' A confirmation email is on its way.');
+      } else {
+        $('formMsg').className = 'msg err';
+        $('formMsg').textContent = res.message;
+        $('submit').disabled = false;
+      }
+      load();
+    }).catch(() => {
+      $('formMsg').className = 'msg err';
+      $('formMsg').textContent = 'Something went wrong. Please try again.';
+      $('submit').disabled = false;
+    });
+  };
+
+  function showToast(t) {
+    $('toast').textContent = t;
+    $('toast').style.display = 'block';
+    setTimeout(() => $('toast').style.display = 'none', 3500);
+  }
+
+  function showCancel(token) {
+    $('filters').style.display = 'none';
+    $('range').textContent = 'Cancel a scorekeeping sign-up';
+    call('lookup', { token: token }).then(info => {
+      const list = $('list');
+      list.innerHTML = '';
+      const card = document.createElement('div');
+      card.className = 'cancel-card';
+      if (!info.ok) {
+        card.innerHTML = '<h3></h3>';
+        card.querySelector('h3').textContent = info.message;
+        list.appendChild(card);
+        return;
+      }
+      card.innerHTML = '<h3>Cancel this sign-up?</h3><p class="time"></p><p class="match"></p><p class="meta"></p>' +
+        '<div class="row" style="justify-content:flex-start"><button class="claim danger" id="doCancel">Yes, cancel it</button></div>' +
+        '<div class="msg" id="cancelMsg"></div><a class="home" id="home">Keep it and go to the sign-up page</a>';
+      card.querySelector('.time').textContent = info.name + ' \u00b7 ' + info.when;
+      card.querySelector('.match').textContent = info.game;
+      card.querySelector('.meta').textContent = info.where;
+      card.querySelector('#home').href = info.home;
+      list.appendChild(card);
+      $('doCancel').onclick = () => {
+        $('doCancel').disabled = true;
+        $('cancelMsg').className = 'msg';
+        $('cancelMsg').textContent = 'Cancelling\u2026';
+        call('cancel', { token: token }).then(res => {
+          $('cancelMsg').className = res.ok ? 'msg' : 'msg err';
+          $('cancelMsg').textContent = res.message;
+          if (res.ok) {
+            $('doCancel').style.display = 'none';
+            $('home').textContent = 'Sign up for a different game';
+          } else {
+            $('doCancel').disabled = false;
+          }
+        }).catch(() => {
+          $('cancelMsg').className = 'msg err';
+          $('cancelMsg').textContent = 'Something went wrong. Please try again.';
+          $('doCancel').disabled = false;
+        });
+      };
+    }).catch(() => {
+      $('list').innerHTML = '<div class="empty">Could not load this sign-up. Please refresh.</div>';
+    });
+  }
+
+  const token = new URLSearchParams(location.search).get('cancel');
+  if (token) {
+    showCancel(token);
+  } else {
+    load();
+    setInterval(load, 60000);
+  }
+</script>
+</body>
+</html>
